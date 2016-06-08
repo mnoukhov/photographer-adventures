@@ -56,7 +56,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String CLOUD_VISION_API_KEY = BuildConfig.CV_API_KEY;
+    private static final String API_KEY = BuildConfig.API_KEY;
     public static final String FILE_NAME = "temp.jpg";
 
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
 
                     Vision.Builder builder = new Vision.Builder(httpTransport, jsonFactory, null);
                     builder.setVisionRequestInitializer(new
-                            VisionRequestInitializer(CLOUD_VISION_API_KEY));
+                            VisionRequestInitializer(API_KEY));
                     Vision vision = builder.build();
 
                     BatchAnnotateImagesRequest batchAnnotateImagesRequest =
