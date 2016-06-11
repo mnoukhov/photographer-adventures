@@ -161,4 +161,8 @@ public class CloudVisionUtils {
         return message;
     }
 
+    private static boolean compareResults(){
+        return true;
+    }
+
 }
