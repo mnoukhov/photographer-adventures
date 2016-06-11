@@ -19,14 +19,19 @@ import com.google.api.services.vision.v1.VisionRequestInitializer;
 import com.google.api.services.vision.v1.model.AnnotateImageRequest;
 import com.google.api.services.vision.v1.model.BatchAnnotateImagesRequest;
 import com.google.api.services.vision.v1.model.BatchAnnotateImagesResponse;
+import com.google.api.services.vision.v1.model.BoundingPoly;
 import com.google.api.services.vision.v1.model.EntityAnnotation;
 import com.google.api.services.vision.v1.model.Feature;
 import com.google.api.services.vision.v1.model.Image;
+import com.google.api.services.vision.v1.model.Property;
+import com.google.api.services.vision.v1.model.Vertex;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
+
 /**
  * Created by Jeric Pauig on 6/11/2016.
  */
@@ -151,18 +156,39 @@ public class CloudVisionUtils {
         List<EntityAnnotation> labels = response.getResponses().get(0).getLabelAnnotations();
         if (labels != null) {
             for (EntityAnnotation label : labels) {
-                message += String.format("%.3f: %s", label.getScore(), label.getDescription());
+                message += String.format("%s: %.3f", label.getDescription(), label.getScore());
                 message += "\n";
             }
         } else {
             message += "nothing";
         }
 
+        String obj = "chair";
+        boolean found = compareResults(obj, response);
+        message += String.format("Found match with %s : %s", obj, (found ? "true" : "false"));
+
         return message;
     }
 
-    private static boolean compareResults(){
-        return true;
+    private static boolean compareResults(String objectName, BatchAnnotateImagesResponse response) {
+        final Float minimumScore = 0.0f; // threshold to deem that an item matches
+        boolean result = false;
+        String responseName;
+        Float score;
+        objectName = objectName.toLowerCase();
+
+        List<EntityAnnotation> labels = response.getResponses().get(0).getLabelAnnotations();
+        if (null != labels) {
+            for (EntityAnnotation label : labels) {
+                responseName = label.getDescription().toLowerCase();
+                score = label.getScore();
+                if (responseName.contains(objectName) && (minimumScore <= score)) {
+                    result = true;
+                }
+            }
+        }
+
+        return result;
     }
 
 }
