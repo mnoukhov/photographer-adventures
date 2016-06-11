@@ -3,11 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_photo"
+        android:icon="@drawable/camera"
         android:title="@string/action_photo"
         app:showAsAction="always"/>
 
     <!-- Settings, should always be in the overflow -->
     <item android:id="@+id/action_report"
+        android:icon="@drawable/report"
         android:title="@string/action_report"
         app:showAsAction="always"/>
 </menu>

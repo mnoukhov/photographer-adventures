@@ -35,10 +35,8 @@ import android.widget.TextView;
 import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String API_KEY = BuildConfig.API_KEY;
     public static final String FILE_NAME = "temp.jpg";
 
-    private static final String TAG = MainActivity.class.getSimpleName();
     private static final int GALLERY_IMAGE_REQUEST = 1;
     public static final int CAMERA_PERMISSIONS_REQUEST = 2;
     public static final int CAMERA_IMAGE_REQUEST = 3;
@@ -50,10 +48,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        //fab to take photos
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.image_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -76,8 +73,24 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //fab to take user to report
+        FloatingActionButton fab2 = (FloatingActionButton) findViewById(R.id.report_fab);
+        fab2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startReportActivity(view);
+            }
+        });
+
         mImageDetails = (TextView) findViewById(R.id.image_details);
         mMainImage = (ImageView) findViewById(R.id.main_image);
+    }
+
+
+    //Used to start ReportActivity
+    public void startReportActivity(View view){
+        Intent intent = new Intent(this, ReportActivity.class);
+        startActivity(intent);
     }
 
 
