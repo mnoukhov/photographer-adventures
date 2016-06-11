@@ -16,4 +16,16 @@ public class Object {
         this.attempts = attempts;
         //TODO: validate attempts if state is correct or skipped or whatever
     }
+
+    public State getState(){
+        return this.state;
+    }
+
+    public int getAttempts(){
+        return this.attempts;
+    }
+
+    public String getName(){
+        return this.name;
+    }
 }

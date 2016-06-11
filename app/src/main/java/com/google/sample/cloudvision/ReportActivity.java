@@ -14,13 +14,14 @@ import android.view.View;
 public class ReportActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
+    private ObjectManager objects;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
-
-        String[] myDataset = {"fork", "spoon", "knife", "table", "plant", "cat", "plate", "dog", "speaker", "cup", "mug", "apple"};
+        objects = ObjectManager.getInstance(getApplicationContext());
+        String[] myDataset = objects.allItems();
 
         mRecyclerView = (RecyclerView) findViewById(R.id.report_recycler);
 
@@ -31,6 +32,7 @@ public class ReportActivity extends AppCompatActivity {
         // specify an adapter (see also next example)
         mAdapter = new ReportRecyclerAdapter(myDataset);
         mRecyclerView.setAdapter(mAdapter);
+
     }
 
     //Used to start MainActivity
