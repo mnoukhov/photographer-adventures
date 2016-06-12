@@ -33,17 +33,38 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.hardware.Camera;
+import android.hardware.Camera.PictureCallback;
+import android.hardware.Camera.ShutterCallback;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import android.widget.Toast;
+
 import java.io.File;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SurfaceHolder.Callback {
+    private static final String API_KEY = BuildConfig.API_KEY;
     public static final String FILE_NAME = "temp.jpg";
 
+    private static final String TAG = MainActivity.class.getSimpleName();
     private static final int GALLERY_IMAGE_REQUEST = 1;
     public static final int CAMERA_PERMISSIONS_REQUEST = 2;
     public static final int CAMERA_IMAGE_REQUEST = 3;
 
     private TextView mImageDetails;
-    private ImageView mMainImage;
+//    private ImageView mMainImage;
+
+    private Camera camera;
+    private SurfaceView surfaceView;
+    private SurfaceHolder surfaceHolder;
+    private Camera.PictureCallback rawCallback;
+    private Camera.ShutterCallback shutterCallback;
+    private Camera.PictureCallback jpegCallback;
 
     private ObjectManager objects;
 
@@ -52,52 +73,95 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //fab to take photos
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.image_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder
-                        .setMessage(R.string.dialog_select_prompt)
-                        .setPositiveButton(R.string.dialog_select_gallery, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                startGalleryChooser();
-                            }
-                        })
-                        .setNegativeButton(R.string.dialog_select_camera, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                startCamera();
-                            }
-                        });
-                builder.create().show();
+                try {
+                    captureImage();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
-        //fab to take user to report
-        FloatingActionButton fab2 = (FloatingActionButton) findViewById(R.id.report_fab);
-        fab2.setOnClickListener(new View.OnClickListener() {
+        surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
+
+        surfaceHolder = surfaceView.getHolder();
+
+        surfaceHolder.addCallback(this);
+        surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+
+        jpegCallback = new PictureCallback() {
             @Override
-            public void onClick(View view) {
-                startReportActivity(view);
+            public void onPictureTaken(byte[] data, Camera camera) {
+                CloudVisionUtils.uploadImage(data, mImageDetails, surfaceHolder, camera);
             }
-        });
-
-        mImageDetails = (TextView) findViewById(R.id.image_details);
-        mMainImage = (ImageView) findViewById(R.id.main_image);
+        };
 
         objects = ObjectManager.getInstance(getApplicationContext());
+        mImageDetails = (TextView) findViewById(R.id.image_details);
     }
 
 
-    //Used to start ReportActivity
-    public void startReportActivity(View view){
-        Intent intent = new Intent(this, ReportActivity.class);
-        startActivity(intent);
+    public void captureImage() throws IOException {
+        camera.takePicture(null, null, jpegCallback);
     }
 
+    public void refreshCamera() {
+        if (surfaceHolder.getSurface() == null) {
+            return;
+        }
+
+        try {
+            camera.stopPreview();
+        } catch (Exception e) {
+        }
+
+        try {
+            camera.setPreviewDisplay(surfaceHolder);
+            camera.startPreview();
+        } catch (Exception e) {
+        }
+    }
+
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        try {
+            camera = Camera.open();
+        }
+
+        catch (RuntimeException e) {
+            System.err.println(e);
+            return;
+        }
+        Camera.Parameters param;
+        param = camera.getParameters();
+        param.setPreviewSize(352, 288);
+        camera.setParameters(param);
+
+        try {
+            camera.setPreviewDisplay(surfaceHolder);
+            camera.startPreview();
+        }
+
+        catch (Exception e) {
+            System.err.println(e);
+            return;
+        }
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        camera.stopPreview();
+        camera.release();
+        camera = null;
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+        //refreshCamera();
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -148,11 +212,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == GALLERY_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
-            CloudVisionUtils.uploadImage(data.getData(), mMainImage, mImageDetails, this);
-        } else if (requestCode == CAMERA_IMAGE_REQUEST && resultCode == RESULT_OK) {
-            CloudVisionUtils.uploadImage(Uri.fromFile(getCameraFile()), mMainImage, mImageDetails, this);
-        }
+//        if (requestCode == GALLERY_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
+//            CloudVisionUtils.uploadImage(data.getData(), mMainImage, mImageDetails, this);
+//        } else if (requestCode == CAMERA_IMAGE_REQUEST && resultCode == RESULT_OK) {
+//            CloudVisionUtils.uploadImage(Uri.fromFile(getCameraFile()), mMainImage, mImageDetails, this);
+//        }
     }
 
     @Override

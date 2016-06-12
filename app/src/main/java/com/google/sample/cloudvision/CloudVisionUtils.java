@@ -2,10 +2,13 @@ package com.google.sample.cloudvision;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.view.SurfaceHolder;
+import android.hardware.Camera;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.SurfaceHolder;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,6 +34,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import android.graphics.BitmapFactory;
 
 /**
  * Created by Jeric Pauig on 6/11/2016.
@@ -40,17 +44,17 @@ public class CloudVisionUtils {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String API_KEY = BuildConfig.API_KEY;
 
-    public static void uploadImage(Uri uri, final ImageView mMainImage, final TextView mImageDetails, Context context) {
-        if (uri != null) {
+    public static void uploadImage(byte[] data, final TextView mImageDetails, final SurfaceHolder surfaceHolder, final Camera camera) {
+        if (data.length != 0) {
             try {
                 // scale the image to save on bandwidth
                 Bitmap bitmap =
                         scaleBitmapDown(
-                                MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri),
+                                BitmapFactory.decodeByteArray(data , 0, data.length),
                                 1200);
 
-                callCloudVision(bitmap, mImageDetails);
-                mMainImage.setImageBitmap(bitmap);
+                callCloudVision(bitmap, mImageDetails, surfaceHolder, camera);
+                //mMainImage.setImageBitmap(bitmap);
 
             } catch (IOException e) {
                 Log.d(TAG, "Image picking failed because " + e.getMessage());
@@ -60,7 +64,7 @@ public class CloudVisionUtils {
         }
     }
 
-    private static void callCloudVision(final Bitmap bitmap, final TextView mImageDetails) throws IOException {
+    private static void callCloudVision(final Bitmap bitmap, final TextView mImageDetails, final SurfaceHolder surfaceHolder, final Camera camera) throws IOException {
         // Switch text to loading
         mImageDetails.setText(R.string.loading_message);
 
@@ -126,6 +130,7 @@ public class CloudVisionUtils {
 
             protected void onPostExecute(String result) {
                 mImageDetails.setText(result);
+                refreshCamera(surfaceHolder, camera);
             }
         }.execute();
     }
@@ -168,6 +173,23 @@ public class CloudVisionUtils {
         message += String.format("Found match with %s : %s", obj, (found ? "true" : "false"));
 
         return message;
+    }
+
+    public static void refreshCamera(final SurfaceHolder surfaceHolder, final Camera cam) {
+        if (surfaceHolder.getSurface() == null) {
+            return;
+        }
+
+        try {
+            cam.stopPreview();
+        } catch (Exception e) {
+        }
+
+        try {
+            cam.setPreviewDisplay(surfaceHolder);
+            cam.startPreview();
+        } catch (Exception e) {
+        }
     }
 
     private static boolean compareResults(String objectName, BatchAnnotateImagesResponse response) {
