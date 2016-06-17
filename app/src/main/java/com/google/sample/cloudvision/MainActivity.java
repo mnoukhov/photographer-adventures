@@ -73,6 +73,14 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        FloatingActionButton fab2 = (FloatingActionButton) findViewById(R.id.report_fab);
+        fab2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startReportActivity(view);
+            }
+        });
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.image_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,6 +111,11 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         mImageDetails = (TextView) findViewById(R.id.image_details);
     }
 
+    //Used to start ReportActivity
+    public void startReportActivity(View view){
+        Intent intent = new Intent(this, ReportActivity.class);
+        startActivity(intent);
+    }
 
     public void captureImage() throws IOException {
         camera.takePicture(null, null, jpegCallback);
