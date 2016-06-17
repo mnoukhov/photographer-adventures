@@ -133,11 +133,15 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         catch (RuntimeException e) {
             System.err.println(e);
+            System.out.println("Could not open camera");
             return;
         }
         Camera.Parameters param;
         param = camera.getParameters();
         param.setPreviewSize(352, 288);
+
+        camera.setDisplayOrientation(90);
+
         camera.setParameters(param);
 
         try {
@@ -160,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        //refreshCamera();
+        refreshCamera();
     }
 
     @Override
