@@ -7,8 +7,8 @@ public class Object {
     public enum State {CORRECT, SKIPPED, NOT_TESTED};
 
     private String name;
-    private State state;
-    private int attempts;
+    public State state;
+    public int attempts;
 
     public Object(String name, State state, int attempts){
         this.name = name;
