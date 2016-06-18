@@ -102,10 +102,31 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         surfaceHolder.addCallback(this);
         surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
+        final CloudVisionUtils.CloudVisionTask.CVTaskListener listener = new CloudVisionUtils.CloudVisionTask.CVTaskListener() {
+            @Override
+            public void onFinished(String result) {
+                // Update object statistics and reinsert into object manager!
+                String output;
+                if (result.contains(mCurrentObject.toString().toLowerCase())) {
+                    mCurrentObject.setState(Object.State.CORRECT);
+                    output = "Congratulations, you found the object!";
+                } else {
+                    mCurrentObject.setState(Object.State.SKIPPED);
+                    output = "Oops! Try again." + result;
+                }
+                mCurrentObject.setAttempts(1 + mCurrentObject.getAttempts());
+                mObjectManager.updateObject(mCurrentObject);
+
+                // Output match results and refresh the camera
+                mImageDetails.setText(output);
+                refreshCamera();
+            }
+        };
+
         jpegCallback = new PictureCallback() {
             @Override
             public void onPictureTaken(byte[] data, Camera camera) {
-                CloudVisionUtils.uploadImage(data, mImageDetails, mObjectManager, mCurrentObject, surfaceHolder, camera);
+                CloudVisionUtils.uploadImage(data, mCurrentObject, listener);
             }
         };
 
