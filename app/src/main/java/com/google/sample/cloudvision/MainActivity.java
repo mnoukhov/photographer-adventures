@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     public static final int CAMERA_IMAGE_REQUEST = 3;
 
     private TextView mImageDetails;
+    private TextView mSearchWord;
 //    private ImageView mMainImage;
 
     private Camera camera;
@@ -66,7 +67,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private Camera.ShutterCallback shutterCallback;
     private Camera.PictureCallback jpegCallback;
 
-    private ObjectManager objects;
+    private ObjectManager mObjectManager;
+    private Object mCurrentObject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,12 +105,15 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         jpegCallback = new PictureCallback() {
             @Override
             public void onPictureTaken(byte[] data, Camera camera) {
-                CloudVisionUtils.uploadImage(data, mImageDetails, surfaceHolder, camera);
+                CloudVisionUtils.uploadImage(data, mImageDetails, mObjectManager, mCurrentObject, surfaceHolder, camera);
             }
         };
 
-        objects = ObjectManager.getInstance(getApplicationContext());
+        mObjectManager = ObjectManager.getInstance(getApplicationContext());
         mImageDetails = (TextView) findViewById(R.id.image_details);
+        mSearchWord = (TextView) findViewById(R.id.search_word);
+        mCurrentObject = mObjectManager.getNextObject();
+        mSearchWord.setText(String.format("Current Search Word: %s.",mCurrentObject.getName()));
     }
 
     //Used to start ReportActivity

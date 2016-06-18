@@ -22,9 +22,21 @@
         android:id="@+id/image_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center|bottom"
+        android:layout_margin="90dp"
+        android:adjustViewBounds="true"
+        app:borderWidth="5dp"
+        app:backgroundTint="#f2ff0000" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/skip_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_menu_gallery" />
+        android:src="@android:drawable/ic_media_ff"
+        app:backgroundTint="#1976d2"
+        app:fabSize="mini"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/report_fab"
@@ -32,6 +44,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/abc_ic_menu_paste_mtrl_am_alpha" />
+        android:src="@drawable/abc_ic_menu_paste_mtrl_am_alpha"
+        app:backgroundTint="#1976d2"
+        app:fabSize="mini"/>
 
 </android.support.design.widget.CoordinatorLayout>

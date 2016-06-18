@@ -17,18 +17,26 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-        <SurfaceView
+            <TextView
+                android:id="@+id/search_word"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="Current Search Word:" />
+
+            <TextView
+                android:id="@+id/image_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text=""/>
+
+            <SurfaceView
             android:id="@+id/surfaceView"
             android:layout_width="match_parent"
             android:layout_height="1000px"
             android:layout_weight="1"/>
 
-        <TextView
-            android:id="@+id/image_details"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="Use the floating action button to select an image."/>
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

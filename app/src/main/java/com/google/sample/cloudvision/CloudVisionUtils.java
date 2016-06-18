@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import android.graphics.BitmapFactory;
+import android.widget.Toast;
 
 /**
  * Created by Jeric Pauig on 6/11/2016.
@@ -44,7 +45,8 @@ public class CloudVisionUtils {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String API_KEY = BuildConfig.API_KEY;
 
-    public static void uploadImage(byte[] data, final TextView mImageDetails, final SurfaceHolder surfaceHolder, final Camera camera) {
+    public static void uploadImage(byte[] data, final TextView mImageDetails, final ObjectManager mObjectManager,
+                                   final Object mCurrentObject, final SurfaceHolder surfaceHolder, final Camera camera) {
         if (data.length != 0) {
             try {
                 // scale the image to save on bandwidth
@@ -53,7 +55,7 @@ public class CloudVisionUtils {
                                 BitmapFactory.decodeByteArray(data , 0, data.length),
                                 1200);
 
-                callCloudVision(bitmap, mImageDetails, surfaceHolder, camera);
+                callCloudVision(bitmap, mImageDetails, mObjectManager, mCurrentObject, surfaceHolder, camera);
                 //mMainImage.setImageBitmap(bitmap);
 
             } catch (IOException e) {
@@ -64,7 +66,8 @@ public class CloudVisionUtils {
         }
     }
 
-    private static void callCloudVision(final Bitmap bitmap, final TextView mImageDetails, final SurfaceHolder surfaceHolder, final Camera camera) throws IOException {
+    private static void callCloudVision(final Bitmap bitmap, final TextView mImageDetails, final ObjectManager mObjectManager,
+                                        final Object mCurrentObject, final SurfaceHolder surfaceHolder, final Camera camera) throws IOException {
         // Switch text to loading
         mImageDetails.setText(R.string.loading_message);
 
@@ -129,7 +132,20 @@ public class CloudVisionUtils {
             }
 
             protected void onPostExecute(String result) {
-                mImageDetails.setText(result);
+                // Update object statistics and reinsert into object manager!
+                String output;
+                if (result.contains(mCurrentObject.toString().toLowerCase())) {
+                    mCurrentObject.setState(Object.State.CORRECT);
+                    output = "Congratulations, you found the object!";
+                } else {
+                    mCurrentObject.setState(Object.State.SKIPPED);
+                    output = "Oops! Try again." + result;
+                }
+                mCurrentObject.setAttempts(1 + mCurrentObject.getAttempts());
+                mObjectManager.updateObject(mCurrentObject);
+
+                // Output match results and refresh the camera
+                mImageDetails.setText(output);
                 refreshCamera(surfaceHolder, camera);
             }
         }.execute();
@@ -156,22 +172,13 @@ public class CloudVisionUtils {
     }
 
     private static String convertResponseToString(BatchAnnotateImagesResponse response) {
-        String message = "I found these things:\n\n";
-
+        String message = "";
         List<EntityAnnotation> labels = response.getResponses().get(0).getLabelAnnotations();
         if (labels != null) {
             for (EntityAnnotation label : labels) {
-                message += String.format("%s: %.3f", label.getDescription(), label.getScore());
-                message += "\n";
+                message += String.format("%s, ", label.getDescription().toLowerCase(), label.getScore());
             }
-        } else {
-            message += "nothing";
         }
-
-        String obj = "chair";
-        boolean found = compareResults(obj, response);
-        message += String.format("Found match with %s : %s", obj, (found ? "true" : "false"));
-
         return message;
     }
 
@@ -191,26 +198,4 @@ public class CloudVisionUtils {
         } catch (Exception e) {
         }
     }
-
-    private static boolean compareResults(String objectName, BatchAnnotateImagesResponse response) {
-        final Float minimumScore = 0.0f; // threshold to deem that an item matches
-        boolean result = false;
-        String responseName;
-        Float score;
-        objectName = objectName.toLowerCase();
-
-        List<EntityAnnotation> labels = response.getResponses().get(0).getLabelAnnotations();
-        if (null != labels) {
-            for (EntityAnnotation label : labels) {
-                responseName = label.getDescription().toLowerCase();
-                score = label.getScore();
-                if (responseName.contains(objectName) && (minimumScore <= score)) {
-                    result = true;
-                }
-            }
-        }
-
-        return result;
-    }
-
 }

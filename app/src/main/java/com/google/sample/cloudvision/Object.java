@@ -7,8 +7,8 @@ public class Object {
     public enum State {CORRECT, SKIPPED, NOT_TESTED};
 
     private String name;
-    public State state;
-    public int attempts;
+    private State state;
+    private int attempts;
 
     public Object(String name, State state, int attempts){
         this.name = name;
@@ -27,5 +27,16 @@ public class Object {
 
     public String getName(){
         return this.name;
+    }
+
+    public void setState(Object.State newState) {
+        this.state = newState;
+    }
+
+    public void setAttempts(int attempts) { this.attempts = attempts; }
+
+    public void reset() {
+        this.state = State.NOT_TESTED;
+        this.attempts = 0;
     }
 }
