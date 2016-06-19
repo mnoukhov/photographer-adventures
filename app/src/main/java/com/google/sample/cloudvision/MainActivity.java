@@ -75,20 +75,29 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FloatingActionButton fab2 = (FloatingActionButton) findViewById(R.id.report_fab);
-        fab2.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton reportFab = (FloatingActionButton) findViewById(R.id.report_fab);
+        reportFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startReportActivity(view);
             }
         });
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.image_fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton skipFab = (FloatingActionButton) findViewById(R.id.skip_fab);
+        skipFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                skipObject();
+            }
+        });
+
+        FloatingActionButton pictureFab = (FloatingActionButton) findViewById(R.id.image_fab);
+        pictureFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try {
                     captureImage();
+                    mImageDetails.setText("Checking your image");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -107,9 +116,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             public void onFinished(String result) {
                 // Update object statistics and reinsert into object manager!
                 String output;
-                if (result.contains(mCurrentObject.toString().toLowerCase())) {
+                if (result.contains(mCurrentObject.getName().toLowerCase())) {
                     mCurrentObject.setState(Object.State.CORRECT);
-                    output = "Congratulations, you found the object!";
+                    output = String.format("Congratulations, you found the %s!", mCurrentObject.getName());
                 } else {
                     mCurrentObject.setState(Object.State.SKIPPED);
                     output = "Oops! Try again." + result;
@@ -133,14 +142,18 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         mObjectManager = ObjectManager.getInstance(getApplicationContext());
         mImageDetails = (TextView) findViewById(R.id.image_details);
         mSearchWord = (TextView) findViewById(R.id.search_word);
-        mCurrentObject = mObjectManager.getNextObject();
-        mSearchWord.setText(String.format("Current Search Word: %s.",mCurrentObject.getName()));
+        skipObject();
     }
 
     //Used to start ReportActivity
     public void startReportActivity(View view){
         Intent intent = new Intent(this, ReportActivity.class);
         startActivity(intent);
+    }
+
+    public void skipObject(){
+        mCurrentObject = mObjectManager.getNextObject(mCurrentObject);
+        mSearchWord.setText(String.format("Current Search Word: %s.",mCurrentObject.getName()));
     }
 
     public void captureImage() throws IOException {

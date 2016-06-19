@@ -26,7 +26,8 @@
         android:layout_margin="90dp"
         android:adjustViewBounds="true"
         app:borderWidth="5dp"
-        app:backgroundTint="#f2ff0000" />
+        app:backgroundTint="#f2ff0000"
+        android:src="@drawable/abc_btn_radio_material" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/skip_fab"

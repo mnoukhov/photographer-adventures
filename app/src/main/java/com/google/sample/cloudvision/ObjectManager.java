@@ -7,44 +7,67 @@ import android.content.Context;
  */
 public class ObjectManager {
 
-    private StorageUtils storage;
-    private PropertiesHelper properties;
-    private String[] allItems;
-    private static ObjectManager manager;
+    private StorageUtils mStorage;
+    private PropertiesHelper mProperties;
+    private String[] mAllItems;
+    private int mCurrentItemIndex = 0;
+    private static ObjectManager mManager;
+
 
     public static ObjectManager getInstance(Context context){
-        if (manager != null){
-            return manager;
+        if (mManager != null){
+            return mManager;
         } else {
-            manager = new ObjectManager(context);
-            return manager;
+            mManager = new ObjectManager(context);
+            return mManager;
         }
     }
 
     public ObjectManager(Context context){
-        storage = new StorageUtils(context);
-        properties = new PropertiesHelper(context);
-        allItems = storage.getAllKeys();
+        mStorage = new StorageUtils(context);
+        mProperties = new PropertiesHelper(context);
+        mAllItems = mStorage.getAllKeys();
+        mCurrentItemIndex = 0;
     }
 
     //Return list of all item names in the database
     public String[] allItemNames(){
-        return allItems;
+        return mAllItems;
     }
 
-    public Object[] getAllItems(){ return storage.getAllObjects(); }
+    public Object[] getAllItems(){ return mStorage.getAllObjects(); }
 
     //Return specified object with name
     public Object getObject(String name){
-        return storage.getObject(name);
+        return mStorage.getObject(name);
     }
 
-    //Return the next object that is NOT_TESTED
-    public Object getNextObject(){
-        return new Object("fork", Object.State.NOT_TESTED, 0);
+    /*
+    Return the next object that is NOT_TESTED and not the same as the current object
+    */
+    public Object getNextObject(Object current) {
+        for (int i = mCurrentItemIndex + 1; i < mAllItems.length; i++) {
+            Object o = getObject(mAllItems[i]);
+            if (o.getState() == Object.State.NOT_TESTED || o.getState() == Object.State.SKIPPED
+                    && (current == null || !o.getName().equalsIgnoreCase(current.getName()))) {
+                mCurrentItemIndex = i;
+                return o;
+            }
+        }
+
+        for (int i = 0; i < mCurrentItemIndex; i++) {
+            Object o = getObject(mAllItems[i]);
+            if (o.getState() == Object.State.NOT_TESTED || o.getState() == Object.State.SKIPPED
+                    && (current == null || !o.getName().equalsIgnoreCase(current.getName()))) {
+                mCurrentItemIndex = i;
+                return o;
+            }
+        }
+        return null;
+        //TODO: Handle when nothing is left to test
     }
 
     public boolean updateObject(Object o){
-        return storage.insertOrUpdateObject(o);
+        return mStorage.insertOrUpdateObject(o);
     }
 }

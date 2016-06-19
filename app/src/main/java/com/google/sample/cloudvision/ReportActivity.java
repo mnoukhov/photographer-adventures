@@ -20,8 +20,7 @@ public class ReportActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
         objects = ObjectManager.getInstance(getApplicationContext());
-        Object[] allObjects = objects.getAllItems();
-        String[] myDataset = objects.allItemNames();
+        Object[] myDataset = objects.getAllItems();
 
         mRecyclerView = (RecyclerView) findViewById(R.id.report_recycler);
 
