@@ -27,10 +27,19 @@ public class ObjectManager {
         allItems = storage.getAllKeys();
     }
 
-    public String[] allItems(){
+    //Return list of all item names in the database
+    public String[] allItemNames(){
         return allItems;
     }
 
+    public Object[] getAllItems(){ return storage.getAllObjects(); }
+
+    //Return specified object with name
+    public Object getObject(String name){
+        return storage.getObject(name);
+    }
+
+    //Return the next object that is NOT_TESTED
     public Object getNextObject(){
         return new Object("fork", Object.State.NOT_TESTED, 0);
     }
@@ -38,6 +47,4 @@ public class ObjectManager {
     public boolean updateObject(Object o){
         return storage.insertOrUpdateObject(o);
     }
-
-
 }

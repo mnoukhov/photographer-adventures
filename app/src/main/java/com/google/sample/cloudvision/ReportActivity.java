@@ -2,7 +2,6 @@ package com.google.sample.cloudvision;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,7 +20,8 @@ public class ReportActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
         objects = ObjectManager.getInstance(getApplicationContext());
-        String[] myDataset = objects.allItems();
+        Object[] allObjects = objects.getAllItems();
+        String[] myDataset = objects.allItemNames();
 
         mRecyclerView = (RecyclerView) findViewById(R.id.report_recycler);
 

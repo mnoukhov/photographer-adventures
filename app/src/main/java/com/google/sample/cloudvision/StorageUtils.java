@@ -31,7 +31,11 @@ public class StorageUtils{
     }
 
     public Object getObject(Object o){
-        Cursor c = db.rawQuery(getObjectQuery(o.getName()), null);
+        return (getObject(o.getName()));
+    }
+
+    public Object getObject(String name){
+        Cursor c = db.rawQuery(getObjectQuery(name), null);
         if(c.moveToFirst()) {
             Object result = new Object(c.getString(1), convertStateFromInt(c.getInt(2)), c.getInt(3));
             c.close();
@@ -40,6 +44,19 @@ public class StorageUtils{
             c.close();
             return null;
         }
+    }
+
+    public Object[] getAllObjects(){
+        Cursor c = db.rawQuery(getAllObjectQuery(), null);
+        Object[] allObjects = new Object[c.getCount()];
+        int i = 0;
+        while(c.moveToNext()) {
+            Object result = new Object(c.getString(1), convertStateFromInt(c.getInt(2)), c.getInt(3));
+            allObjects[i] = result;
+            i++;
+        }
+        c.close();
+        return allObjects;
     }
 
     public boolean insertOrUpdateObject(Object o){
@@ -65,6 +82,10 @@ public class StorageUtils{
     public static String getObjectQuery(String name){
         return "SELECT * FROM " + StorageConstants.OBJECT_TABLE_NAME + " WHERE " +
                 StorageConstants.OBJECT_COLUMN_NAME + " = '" + name + "'";
+    }
+
+    public static String getAllObjectQuery(){
+        return "SELECT * FROM " + StorageConstants.OBJECT_TABLE_NAME;
     }
 
     public static String getNameQuery(){
