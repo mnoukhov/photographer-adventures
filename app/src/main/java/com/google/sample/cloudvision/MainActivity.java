@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 if (result.contains(mCurrentObject.getName().toLowerCase())) {
                     mCurrentObject.setState(Object.State.CORRECT);
                     output = String.format("Congratulations, you found the %s!", mCurrentObject.getName());
-                    skipObject();
+
                 } else {
                     mCurrentObject.setState(Object.State.SKIPPED);
                     output = "Oops! Try again." + result;
@@ -130,6 +130,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 // Output match results and refresh the camera
                 mImageDetails.setText(output);
                 refreshCamera();
+                if (result.contains(mCurrentObject.getName().toLowerCase())){
+                    skipObject();
+                }
             }
         };
 
