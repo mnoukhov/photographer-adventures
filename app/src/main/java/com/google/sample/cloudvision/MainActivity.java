@@ -17,41 +17,28 @@
 package com.google.sample.cloudvision;
 
 import android.Manifest;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.MenuItem;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
-import android.hardware.Camera.ShutterCallback;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-
-import android.widget.Toast;
-
 import java.io.File;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements SurfaceHolder.Callback {
-    private static final String API_KEY = BuildConfig.API_KEY;
     public static final String FILE_NAME = "temp.jpg";
-
-    private static final String TAG = MainActivity.class.getSimpleName();
     private static final int GALLERY_IMAGE_REQUEST = 1;
     public static final int CAMERA_PERMISSIONS_REQUEST = 2;
     public static final int CAMERA_IMAGE_REQUEST = 3;
@@ -61,7 +48,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 //    private ImageView mMainImage;
 
     private Camera camera;
-    private SurfaceView surfaceView;
     private SurfaceHolder surfaceHolder;
     private Camera.PictureCallback rawCallback;
     private Camera.ShutterCallback shutterCallback;
@@ -104,10 +90,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             }
         });
 
-        surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
-
+        SurfaceView surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
         surfaceHolder = surfaceView.getHolder();
-
         surfaceHolder.addCallback(this);
         surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
@@ -122,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
                 } else {
                     mCurrentObject.setState(Object.State.SKIPPED);
-                    output = "Oops! Try again." + result;
+                    output = "Oops, try again! Looks like your image contains " + result;
                 }
                 mCurrentObject.setAttempts(1 + mCurrentObject.getAttempts());
                 mObjectManager.updateObject(mCurrentObject);
@@ -194,7 +178,10 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         }
         Camera.Parameters param;
         param = camera.getParameters();
-        param.setPreviewSize(352, 288);
+
+        List<Camera.Size> sizes = param.getSupportedPreviewSizes();
+        Camera.Size cs = sizes.get(0);
+        param.setPreviewSize(cs.width, cs.height);
 
         camera.setDisplayOrientation(90);
 

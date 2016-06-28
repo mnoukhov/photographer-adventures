@@ -33,3 +33,9 @@ captures/
 
 # Secrets
 secrets.properties
+
+# Android Studio defaults
+*.iml
+.idea/workspace.xml
+.idea/libraries
+.DS_Store
