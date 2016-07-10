@@ -8,11 +8,12 @@ import android.widget.TextView;
 
 public class ReportRecyclerAdapter extends RecyclerView.Adapter<ReportRecyclerAdapter.ViewHolder> {
     private Object[] mDataset;
+    private static MyClickListener myClickListener;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         // each data item is just a string in this case
         public TextView mObjectName;
         public TextView mObjectStatus;
@@ -22,7 +23,17 @@ public class ReportRecyclerAdapter extends RecyclerView.Adapter<ReportRecyclerAd
             mObjectName = (TextView) itemView.findViewById(R.id.objectName);
             mObjectStatus = (TextView) itemView.findViewById(R.id.objectStatus);
             mObjectAttempts = (TextView) itemView.findViewById(R.id.objectAttempts);
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View v) {
+            myClickListener.onItemClick(getPosition(), v);
+        }
+    }
+
+    public void setOnItemClickListener(MyClickListener myClickListener) {
+        this.myClickListener = myClickListener;
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
@@ -65,5 +76,9 @@ public class ReportRecyclerAdapter extends RecyclerView.Adapter<ReportRecyclerAd
     @Override
     public int getItemCount() {
         return mDataset.length;
+    }
+
+    public interface MyClickListener {
+        public void onItemClick(int position, View v);
     }
 }

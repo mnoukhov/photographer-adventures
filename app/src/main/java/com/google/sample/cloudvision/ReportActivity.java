@@ -44,6 +44,17 @@ public class ReportActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ((ReportRecyclerAdapter) mAdapter).setOnItemClickListener(new ReportRecyclerAdapter.MyClickListener() {
+              @Override
+              public void onItemClick(int position, View v) {
+                  startCameraActivity(v);
+              }
+          });
+    }
+
     //Used to start MainActivity
     public void startCameraActivity(View view){
         Intent intent = new Intent(this, MainActivity.class);
