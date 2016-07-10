@@ -6,10 +6,43 @@
     android:layout_height="match_parent"
     android:weightSum="1">
 
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        >
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="Object Name"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textStyle="bold"/>
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="Object Status"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textStyle="bold"/>
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="Object Attempts"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textStyle="bold"/>
+    </LinearLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/report_recycler"
         android:layout_width="match_parent"
-        android:layout_height="179dp"
+        android:layout_height="match_parent"
         android:layout_weight="0.95" />
 
     <TextView
