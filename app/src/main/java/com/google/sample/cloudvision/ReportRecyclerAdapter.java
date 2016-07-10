@@ -14,10 +14,14 @@ public class ReportRecyclerAdapter extends RecyclerView.Adapter<ReportRecyclerAd
     // you provide access to all the views for a data item in a view holder
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public TextView mTextView;
+        public TextView mObjectName;
+        public TextView mObjectStatus;
+        public TextView mObjectAttempts;
         public ViewHolder(View v) {
             super(v);
-            mTextView = (TextView) itemView.findViewById(R.id.textView);
+            mObjectName = (TextView) itemView.findViewById(R.id.objectName);
+            mObjectStatus = (TextView) itemView.findViewById(R.id.objectStatus);
+            mObjectAttempts = (TextView) itemView.findViewById(R.id.objectAttempts);
         }
     }
 
@@ -43,15 +47,18 @@ public class ReportRecyclerAdapter extends RecyclerView.Adapter<ReportRecyclerAd
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         Object o = mDataset[position];
-        String stateString;
+        String stateString = "";
         Object.State state = o.getState();
         if (state == Object.State.SKIPPED && o.getAttempts() > 0){
-            stateString = "INCORRECT";
-        } else {
-            stateString = o.getState().toString();
+            stateString = "Incorrect";
+        } else if (state == Object.State.CORRECT) {
+            stateString = "Correct";
+        } else if (state == Object.State.NOT_TESTED) {
+            stateString = "Not tested";
         }
-        String s = String.format("%s %s %d", o.getName(), stateString, o.getAttempts());
-        holder.mTextView.setText(s);
+        holder.mObjectName.setText(o.getName());
+        holder.mObjectStatus.setText(stateString);
+        holder.mObjectAttempts.setText(Integer.toString(o.getAttempts()));
     }
 
     // Return the size of your dataset (invoked by the layout manager)
