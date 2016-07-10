@@ -2,16 +2,19 @@ package com.google.sample.cloudvision;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ProgressBar;
 
 /**
  * Created by Jeric Pauig on 6/11/2016.
  */
 public class ReportActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
+    private ProgressBar mProgress;
     private RecyclerView.Adapter mAdapter;
     private ObjectManager objects;
 
@@ -21,21 +24,28 @@ public class ReportActivity extends AppCompatActivity {
         setContentView(R.layout.activity_report);
         objects = ObjectManager.getInstance(getApplicationContext());
         Object[] myDataset = objects.getAllItems();
-
         mRecyclerView = (RecyclerView) findViewById(R.id.report_recycler);
-
         // use a linear layout manager
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
-
-        // specify an adapter (see also next example)
         mAdapter = new ReportRecyclerAdapter(myDataset);
         mRecyclerView.setAdapter(mAdapter);
+
+        mProgress = (ProgressBar) findViewById(R.id.user_experience);
+        mProgress.setProgress(50);
+
+        FloatingActionButton reportFab = (FloatingActionButton) findViewById(R.id.camera_fab);
+        reportFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startCameraActivity(view);
+            }
+        });
 
     }
 
     //Used to start MainActivity
-    public void startReportActivity(View view){
+    public void startCameraActivity(View view){
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }

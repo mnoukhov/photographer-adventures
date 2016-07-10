@@ -1,21 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:weightSum="1">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/report_recycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:foregroundGravity="fill_horizontal|center_horizontal|fill_vertical"/>
+        android:layout_height="179dp"
+        android:layout_weight="0.95" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textView"
-        android:layout_gravity="center_horizontal" />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Level Progress"
+        android:id="@+id/textView2" />
 
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="261dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/user_experience"
+        android:layout_gravity="center_vertical|left"
+        android:indeterminate="false" />
 
-</android.support.design.widget.CoordinatorLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/camera_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|bottom"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@android:drawable/ic_menu_camera"
+        app:backgroundTint="#1976d2"
+        app:fabSize="mini"
+        android:baselineAlignBottom="false" />
+
+</LinearLayout>

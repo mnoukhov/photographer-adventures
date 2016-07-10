@@ -32,7 +32,7 @@ public class ReportRecyclerAdapter extends RecyclerView.Adapter<ReportRecyclerAd
                                                    int viewType) {
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.activity_report, parent, false);
+                .inflate(R.layout.report_item, parent, false);
         // set the view's size, margins, paddings and layout parameters
 
         return new ViewHolder(v);
