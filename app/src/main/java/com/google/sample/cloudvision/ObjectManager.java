@@ -2,6 +2,8 @@ package com.google.sample.cloudvision;
 
 import android.content.Context;
 
+import java.util.Properties;
+
 /**
  * Created by Jeric Pauig on 6/11/2016.
  */
@@ -40,6 +42,12 @@ public class ObjectManager {
     //Return specified object with name
     public Object getObject(String name){
         return mStorage.getObject(name);
+    }
+
+    public int getExperience(Object o){
+        Properties items = mProperties.getProperties("items.properties");
+        int experience = Integer.valueOf(items.getProperty(o.getName()));
+        return experience;
     }
 
     /*

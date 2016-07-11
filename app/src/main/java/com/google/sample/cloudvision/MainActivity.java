@@ -54,12 +54,15 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private Camera.PictureCallback jpegCallback;
 
     private ObjectManager mObjectManager;
+    private PlayerManager mPlayerManager;
     private Object mCurrentObject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mPlayerManager = new PlayerManager(getApplicationContext());
 
         FloatingActionButton reportFab = (FloatingActionButton) findViewById(R.id.report_fab);
         reportFab.setOnClickListener(new View.OnClickListener() {
@@ -102,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 String output;
                 if (result.contains(mCurrentObject.getName().toLowerCase())) {
                     mCurrentObject.setState(Object.State.CORRECT);
+                    mPlayerManager.addExperience(mObjectManager.getExperience(mCurrentObject));
                     output = String.format("Congratulations, you found the %s!", mCurrentObject.getName());
 
                 } else {
