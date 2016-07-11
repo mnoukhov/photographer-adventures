@@ -78,4 +78,13 @@ public class ObjectManager {
     public boolean updateObject(Object o){
         return mStorage.insertOrUpdateObject(o);
     }
+
+    public void resetObjects() {
+        Object[] objects = getAllItems();
+        for (Object obj : objects) {
+            obj.setState(Object.State.NOT_TESTED);
+            obj.setAttempts(0);
+            updateObject(obj);
+        }
+    }
 }

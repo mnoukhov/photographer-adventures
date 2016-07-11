@@ -1,5 +1,7 @@
 package com.google.sample.cloudvision;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -17,7 +19,7 @@ public class ReportActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private ProgressBar mProgress;
     private RecyclerView.Adapter mAdapter;
-    private ObjectManager objects;
+    private ObjectManager mObjectManager;
     private PlayerManager mPlayerManager;
 
     @Override
@@ -25,8 +27,65 @@ public class ReportActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
         mPlayerManager = new PlayerManager(getApplicationContext());
-        objects = ObjectManager.getInstance(getApplicationContext());
-        Object[] myDataset = objects.getAllItems();
+        mObjectManager = ObjectManager.getInstance(getApplicationContext());
+        updateTextFields();
+
+        FloatingActionButton cameraFab = (FloatingActionButton) findViewById(R.id.camera_fab);
+        cameraFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startCameraActivity(view);
+            }
+        });
+
+        FloatingActionButton resetFab = (FloatingActionButton) findViewById(R.id.reset_fab);
+        resetFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // show dialog to confirm before resetting player data
+                new AlertDialog.Builder(view.getContext())
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setTitle("Reset Player Data")
+                        .setMessage("Are you sure you want to erase all of your data?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                resetStatistics();
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ((ReportRecyclerAdapter) mAdapter).setOnItemClickListener(new ReportRecyclerAdapter.MyClickListener() {
+              @Override
+              public void onItemClick(int position, View v) {
+                  startCameraActivity(v);
+              }
+          });
+    }
+
+    //Used to start MainActivity
+    public void startCameraActivity(View view) {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+
+    //Reset statistics
+    private void resetStatistics() {
+        mObjectManager.resetObjects();
+        mPlayerManager.resetExperience();
+        updateTextFields();
+    }
+
+    // Update text fields in view
+    private void updateTextFields() {
+        Object[] myDataset = mObjectManager.getAllItems();
         mRecyclerView = (RecyclerView) findViewById(R.id.report_recycler);
         // use a linear layout manager
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
@@ -44,34 +103,5 @@ public class ReportActivity extends AppCompatActivity {
         TextView currentLevel = (TextView) findViewById(R.id.current_level);
         String level = "You Are Level "+ mPlayerManager.getLevel();
         currentLevel.setText(level);
-
-        FloatingActionButton reportFab = (FloatingActionButton) findViewById(R.id.camera_fab);
-        reportFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startCameraActivity(view);
-            }
-        });
-
-
-
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        ((ReportRecyclerAdapter) mAdapter).setOnItemClickListener(new ReportRecyclerAdapter.MyClickListener() {
-              @Override
-              public void onItemClick(int position, View v) {
-                  startCameraActivity(v);
-              }
-          });
-    }
-
-    //Used to start MainActivity
-    public void startCameraActivity(View view){
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-    }
-
 }

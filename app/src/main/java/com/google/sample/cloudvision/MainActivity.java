@@ -233,9 +233,11 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        camera.stopPreview();
-        camera.release();
-        camera = null;
+        if (null != camera) {
+            camera.stopPreview();
+            camera.release();
+            camera = null;
+        }
     }
 
     @Override

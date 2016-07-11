@@ -72,6 +72,18 @@ public class PlayerManager {
         return (int)Math.floor((double)differenceInCurrent / (double)differenceInLevel * 100d);
     }
 
+    public void resetExperience() {
+        try {
+            SharedPreferences pref = context.getSharedPreferences(USER_SHARED_PREFERENCES, 0);
+            SharedPreferences.Editor editor = pref.edit();
+            int newExperience = 0;
+            editor.putInt(USER_EXPERIENCE, newExperience);
+            editor.commit();
+        } catch (Exception e){
+            Log.e(LOG_TAG, "resetExperience: failed to reset experience of player", e);
+        }
+    }
+
     //Please don't use unless testing
     protected boolean setExperience(int experience){
         try {
