@@ -37,7 +37,7 @@ public class StorageUtils{
     public Object getObject(String name){
         Cursor c = db.rawQuery(getObjectQuery(name), null);
         if(c.moveToFirst()) {
-            Object result = new Object(c.getString(1), convertStateFromInt(c.getInt(2)), c.getInt(3));
+            Object result = getObjectFromSqlCursor(c);
             c.close();
             return result;
         } else {
@@ -51,7 +51,7 @@ public class StorageUtils{
         Object[] allObjects = new Object[c.getCount()];
         int i = 0;
         while(c.moveToNext()) {
-            Object result = new Object(c.getString(1), convertStateFromInt(c.getInt(2)), c.getInt(3));
+            Object result = getObjectFromSqlCursor(c);
             allObjects[i] = result;
             i++;
         }
@@ -116,6 +116,8 @@ public class StorageUtils{
         }
     }
 
-
+    protected static Object getObjectFromSqlCursor(Cursor c) {
+        return new Object(c.getString(1), convertStateFromInt(c.getInt(2)), c.getInt(3), c.getString(4));
+    }
 
 }

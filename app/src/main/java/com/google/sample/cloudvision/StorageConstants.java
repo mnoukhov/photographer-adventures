@@ -12,6 +12,7 @@ public class StorageConstants {
     public static final String OBJECT_COLUMN_STATE = "state";
     public static final String OBJECT_COLUMN_ATTEMPTS = "attempts";
     public static final String OBJECT_COLUMN_ID = "id";
+    public static final String OBJECT_COLUMN_ASSOCIATED_WORDS = "associated_words";
 
     public static final int OBJECT_STATE_CORRECT = 0;
     public static final int OBJECT_STATE_SKIPPED = 1;

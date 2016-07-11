@@ -20,7 +20,8 @@ public class StorageUtilsOpenHelper extends SQLiteOpenHelper{
                 StorageConstants.OBJECT_COLUMN_ID + " INTEGER PRIMARY KEY ASC AUTOINCREMENT," +
                 StorageConstants.OBJECT_COLUMN_NAME + " VARCHAR(255)," +
                 StorageConstants.OBJECT_COLUMN_STATE + " INTEGER," +
-                StorageConstants.OBJECT_COLUMN_ATTEMPTS + " INTEGER" +
+                StorageConstants.OBJECT_COLUMN_ATTEMPTS + " INTEGER," +
+                StorageConstants.OBJECT_COLUMN_ASSOCIATED_WORDS + " VARCHAR(255) DEFAULT \"\"" +
                 ");";
         return tableQuery;
     }
@@ -46,8 +47,9 @@ public class StorageUtilsOpenHelper extends SQLiteOpenHelper{
         //Instantiate the table
         db.execSQL(buildObjectTableQuery());
 
-        //Fill the database with data from items.properties
+        //Fill the database with data from properties files
         Properties items = properties.getProperties("items.properties");
+        Properties associatedWords = properties.getProperties("associatedwords.properties");
         Set<java.lang.Object> defaultItemSet = items.keySet();
         String[] defaultItems = defaultItemSet.toArray(new String[defaultItemSet.size()]);
         for(int i = 0; i < defaultItems.length; i++){
@@ -56,6 +58,7 @@ public class StorageUtilsOpenHelper extends SQLiteOpenHelper{
             cv.put(StorageConstants.OBJECT_COLUMN_NAME, o.getName());
             cv.put(StorageConstants.OBJECT_COLUMN_ATTEMPTS, o.getAttempts());
             cv.put(StorageConstants.OBJECT_COLUMN_STATE, StorageUtils.convertStateFromObject(o));
+            cv.put(StorageConstants.OBJECT_COLUMN_ASSOCIATED_WORDS, associatedWords.getProperty(o.getName(),""));
             //No current object exists
             db.insert(StorageConstants.OBJECT_TABLE_NAME, StorageConstants.OBJECT_COLUMN_NAME, cv);
         }

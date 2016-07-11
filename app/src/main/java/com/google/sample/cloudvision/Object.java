@@ -9,11 +9,17 @@ public class Object {
     private String name;
     private State state;
     private int attempts;
+    private String associatedWords;
 
-    public Object(String name, State state, int attempts){
+    public Object(String name, State state, int attempts) {
+        this(name, state, attempts, "");
+    }
+
+    public Object(String name, State state, int attempts, String associatedWords) {
         this.name = name;
         this.state = state;
         this.attempts = attempts;
+        this.associatedWords = associatedWords;
         //TODO: validate attempts if state is correct or skipped or whatever
     }
 
@@ -28,6 +34,8 @@ public class Object {
     public String getName(){
         return this.name;
     }
+
+    public String getAssociatedWords() { return this.associatedWords; }
 
     public void setState(Object.State newState) {
         this.state = newState;

@@ -175,7 +175,7 @@ public class CloudVisionUtils {
         List<EntityAnnotation> labels = response.getResponses().get(0).getLabelAnnotations();
         if (labels != null) {
             for (EntityAnnotation label : labels) {
-                message += String.format("%s, ", label.getDescription().toLowerCase(), label.getScore());
+                message += String.format("%s, ", label.getDescription().toLowerCase());
             }
         }
         return message;

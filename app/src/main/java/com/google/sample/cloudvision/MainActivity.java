@@ -35,7 +35,9 @@ import android.hardware.Camera.PictureCallback;
 
 import java.io.IOException;
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements SurfaceHolder.Callback {
     public static final String FILE_NAME = "temp.jpg";
@@ -102,8 +104,27 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             @Override
             public void onFinished(String result) {
                 // Update object statistics and reinsert into object manager!
+                boolean match = false;
                 String output;
-                if (result.contains(mCurrentObject.getName().toLowerCase())) {
+                ArrayList<String> searchWords = new ArrayList<>();
+                String associatedWords = mCurrentObject.getAssociatedWords();
+
+                // add associated words to the list of search words if they exist
+                searchWords.add(mCurrentObject.getName().toLowerCase());
+                if ("" != associatedWords) {
+                    String [] split = associatedWords.split(",");
+                    searchWords.addAll(Arrays.asList(split));
+                }
+
+                // iterate over search words and check if they CloudVision results contain that search word
+                for (String word : searchWords) {
+                    if (result.contains(word)) {
+                        match = true;
+                        break;
+                    }
+                }
+
+                if (match) {
                     mCurrentObject.setState(Object.State.CORRECT);
                     mPlayerManager.addExperience(mObjectManager.getExperience(mCurrentObject));
                     output = String.format("Congratulations, you found the %s!", mCurrentObject.getName());
@@ -112,6 +133,10 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     mCurrentObject.setState(Object.State.SKIPPED);
                     output = "Oops, try again! Looks like your image contains " + result;
                 }
+
+
+
+
                 mCurrentObject.setAttempts(1 + mCurrentObject.getAttempts());
                 mObjectManager.updateObject(mCurrentObject);
 
@@ -145,7 +170,11 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     public void skipObject(){
         mCurrentObject = mObjectManager.getNextObject(mCurrentObject);
-        mSearchWord.setText(String.format("Current Search Word: %s.",mCurrentObject.getName()));
+        String name = "";
+        if (null != mCurrentObject) {
+            name = mCurrentObject.getName();
+        }
+        mSearchWord.setText(String.format("Current Search Word: %s.", name));
     }
 
     public void captureImage() throws IOException {
