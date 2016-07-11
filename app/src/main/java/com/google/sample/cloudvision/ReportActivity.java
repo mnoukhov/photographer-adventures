@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 /**
  * Created by Jeric Pauig on 6/11/2016.
@@ -17,11 +18,13 @@ public class ReportActivity extends AppCompatActivity {
     private ProgressBar mProgress;
     private RecyclerView.Adapter mAdapter;
     private ObjectManager objects;
+    private PlayerManager mPlayerManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
+        mPlayerManager = new PlayerManager(getApplicationContext());
         objects = ObjectManager.getInstance(getApplicationContext());
         Object[] myDataset = objects.getAllItems();
         mRecyclerView = (RecyclerView) findViewById(R.id.report_recycler);
@@ -32,7 +35,15 @@ public class ReportActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mAdapter);
 
         mProgress = (ProgressBar) findViewById(R.id.user_experience);
-        mProgress.setProgress(50);
+        mProgress.setProgress(mPlayerManager.percentageOfLevelComplete());
+
+        TextView expTillNext = (TextView) findViewById(R.id.level_progress);
+        String experience = "Experience Until Next Level: "+ mPlayerManager.experienceUntilNextLevel();
+        expTillNext.setText(experience);
+
+        TextView currentLevel = (TextView) findViewById(R.id.current_level);
+        String level = "You Are Level "+ mPlayerManager.getLevel();
+        currentLevel.setText(level);
 
         FloatingActionButton reportFab = (FloatingActionButton) findViewById(R.id.camera_fab);
         reportFab.setOnClickListener(new View.OnClickListener() {
@@ -41,6 +52,8 @@ public class ReportActivity extends AppCompatActivity {
                 startCameraActivity(view);
             }
         });
+
+
 
     }
 
