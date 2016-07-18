@@ -184,6 +184,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     @Override
     protected void onDestroy(){
         super.onDestroy();
+        //When the app fully stops, either from memory or explicit stoppage, reset to show the next
+        //time the app runs
         setHasShownParentDialog(false);
     }
 
