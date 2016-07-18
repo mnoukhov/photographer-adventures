@@ -17,7 +17,12 @@
 package com.google.sample.cloudvision;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -41,6 +46,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements SurfaceHolder.Callback {
     public static final String FILE_NAME = "temp.jpg";
+    private static final String HAS_SHOWN_PARENT_DIALOG = "hasShownParentDialog";
     private static final int GALLERY_IMAGE_REQUEST = 1;
     public static final int CAMERA_PERMISSIONS_REQUEST = 2;
     public static final int CAMERA_IMAGE_REQUEST = 3;
@@ -134,9 +140,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     output = "Oops, try again! Looks like your image contains " + result;
                 }
 
-
-
-
                 mCurrentObject.setAttempts(1 + mCurrentObject.getAttempts());
                 mObjectManager.updateObject(mCurrentObject);
 
@@ -159,7 +162,36 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         mObjectManager = ObjectManager.getInstance(getApplicationContext());
         mImageDetails = (TextView) findViewById(R.id.image_details);
         mSearchWord = (TextView) findViewById(R.id.search_word);
+
+        showParentDialog();
         skipObject();
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        setHasShownParentDialog(false);
+    }
+
+    private void showParentDialog(){
+        if (!hasShownParentDialog()){
+            ParentalAdviceDialog dialog = new ParentalAdviceDialog();
+            dialog.show(getFragmentManager(), "parentalAdviceDialog");
+            setHasShownParentDialog(true);
+        }
+    }
+
+    private void setHasShownParentDialog(Boolean bool){
+        SharedPreferences pref = getSharedPreferences("MainActivity", MODE_PRIVATE);
+        SharedPreferences.Editor edit = pref.edit();
+        edit.putBoolean(HAS_SHOWN_PARENT_DIALOG, bool);
+        edit.commit();
+    }
+
+    private boolean hasShownParentDialog(){
+        SharedPreferences pref = getSharedPreferences("MainActivity", MODE_PRIVATE);
+        Boolean value = pref.getBoolean(HAS_SHOWN_PARENT_DIALOG, false);
+        return value;
     }
 
     //Used to start ReportActivity
@@ -312,4 +344,21 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             startCamera();
         }
     }
+
+    public static class ParentalAdviceDialog extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the Builder class for convenient dialog construction
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(R.string.parent_advice)
+                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            //Do nothing. This is just a warning for little kids
+                        }
+                    });
+            // Create the AlertDialog object and return it
+            return builder.create();
+        }
+    }
+
 }
