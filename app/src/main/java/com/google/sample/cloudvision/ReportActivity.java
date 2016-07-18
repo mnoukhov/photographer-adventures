@@ -34,7 +34,7 @@ public class ReportActivity extends AppCompatActivity {
         cameraFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startCameraActivity(view);
+                startCameraActivity(view, mObjectManager.getCurrentObject().getName());
             }
         });
 
@@ -64,15 +64,16 @@ public class ReportActivity extends AppCompatActivity {
         super.onResume();
         ((ReportRecyclerAdapter) mAdapter).setOnItemClickListener(new ReportRecyclerAdapter.MyClickListener() {
               @Override
-              public void onItemClick(int position, View v) {
-                  startCameraActivity(v);
+              public void onItemClick(String name, View v) {
+                  startCameraActivity(v, name);
               }
           });
     }
 
     //Used to start MainActivity
-    public void startCameraActivity(View view) {
+    public void startCameraActivity(View view, String name) {
         Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("obj_name", name);
         startActivity(intent);
     }
 

@@ -28,7 +28,7 @@ public class ReportRecyclerAdapter extends RecyclerView.Adapter<ReportRecyclerAd
 
         @Override
         public void onClick(View v) {
-            myClickListener.onItemClick(getPosition(), v);
+            myClickListener.onItemClick(mObjectName.getText().toString(), v);
         }
     }
 
@@ -79,6 +79,6 @@ public class ReportRecyclerAdapter extends RecyclerView.Adapter<ReportRecyclerAd
     }
 
     public interface MyClickListener {
-        public void onItemClick(int position, View v);
+        public void onItemClick(String name, View v);
     }
 }

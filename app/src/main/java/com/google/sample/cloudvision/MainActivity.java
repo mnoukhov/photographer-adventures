@@ -159,13 +159,32 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         mObjectManager = ObjectManager.getInstance(getApplicationContext());
         mImageDetails = (TextView) findViewById(R.id.image_details);
         mSearchWord = (TextView) findViewById(R.id.search_word);
-        skipObject();
+
+        String obj_name = "";
+        if (getIntent() != null){
+            if (getIntent().getExtras() != null) {
+                if (getIntent().getExtras().containsKey("obj_name")) {
+                    obj_name = getIntent().getExtras().getString("obj_name");
+                }
+            }
+        }
+
+        if (obj_name.isEmpty()) {
+            skipObject();
+        } else {
+            goToObject(obj_name);
+        }
     }
 
     //Used to start ReportActivity
     public void startReportActivity(View view){
         Intent intent = new Intent(this, ReportActivity.class);
         startActivity(intent);
+    }
+
+    public void goToObject(String name) {
+        mCurrentObject = mObjectManager.setCurrentObject(name);
+        mSearchWord.setText(String.format("Current Search Word: %s.", name));
     }
 
     public void skipObject(){
