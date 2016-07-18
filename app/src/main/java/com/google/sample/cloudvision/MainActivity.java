@@ -43,22 +43,14 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements SurfaceHolder.Callback {
-    public static final String FILE_NAME = "temp.jpg";
-    private static final int CAMERA_PERMISSION_CALLBACK = 1241;
-    private static final int STORAGE_PERMISSION_CALLBACK = 4554;
     private static final String HAS_SHOWN_PARENT_DIALOG = "hasShownParentDialog";
-    private static final int GALLERY_IMAGE_REQUEST = 1;
     public static final int CAMERA_PERMISSIONS_REQUEST = 2;
-    public static final int CAMERA_IMAGE_REQUEST = 3;
 
     private TextView mImageDetails;
     private TextView mSearchWord;
-//    private ImageView mMainImage;
 
     private Camera camera;
     private SurfaceHolder surfaceHolder;
-    private Camera.PictureCallback rawCallback;
-    private Camera.ShutterCallback shutterCallback;
     private Camera.PictureCallback jpegCallback;
 
     private ObjectManager mObjectManager;
@@ -314,12 +306,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_photo:
-                // User chose the "Settings" item, show the app settings UI...
                 return true;
 
             case R.id.action_report:
-                // User chose the "Favorite" action, mark the current item
-                // as a favorite...
                 return true;
 
             default:
@@ -339,11 +328,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         }
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//    }
-
     @Override
     public void onRequestPermissionsResult(
             int requestCode, String[] permissions, int[] grantResults) {
@@ -359,7 +343,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     public static class ParentalAdviceDialog extends DialogFragment {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the Builder class for convenient dialog construction
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage(R.string.parent_advice)
                     .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
