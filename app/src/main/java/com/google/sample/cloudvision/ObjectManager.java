@@ -87,4 +87,19 @@ public class ObjectManager {
             updateObject(obj);
         }
     }
+
+    public Object setCurrentObject(String name) {
+        for (int i = 0; i < mAllItems.length; i++) {
+            Object o = getObject(mAllItems[i]);
+            if (o.getName().equals(name)) {
+                mCurrentItemIndex = i;
+                return o;
+            }
+        }
+        return null;
+    }
+
+    public Object getCurrentObject() {
+        return getObject(mAllItems[mCurrentItemIndex]);
+    }
 }

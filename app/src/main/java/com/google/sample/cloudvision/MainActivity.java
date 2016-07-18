@@ -165,6 +165,20 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         showParentDialog();
         skipObject();
+        String obj_name = "";
+        if (getIntent() != null){
+            if (getIntent().getExtras() != null) {
+                if (getIntent().getExtras().containsKey("obj_name")) {
+                    obj_name = getIntent().getExtras().getString("obj_name");
+                }
+            }
+        }
+
+        if (obj_name.isEmpty()) {
+            skipObject();
+        } else {
+            goToObject(obj_name);
+        }
     }
 
     @Override
@@ -198,6 +212,11 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     public void startReportActivity(View view){
         Intent intent = new Intent(this, ReportActivity.class);
         startActivity(intent);
+    }
+
+    public void goToObject(String name) {
+        mCurrentObject = mObjectManager.setCurrentObject(name);
+        mSearchWord.setText(String.format("Current Search Word: %s.", name));
     }
 
     public void skipObject(){
