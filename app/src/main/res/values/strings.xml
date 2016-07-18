@@ -12,5 +12,8 @@
     <string name="action_photo">Activity</string>
     <string name="action_report">Report</string>
 
+    <string name="parent_advice">Please make sure an adult is around while playing.</string>
+    <string name="ok">OK</string>
+
     <string name="image_picker_error">Something is wrong with that image. Pick a different one please.</string>
 </resources>

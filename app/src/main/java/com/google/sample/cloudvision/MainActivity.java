@@ -23,10 +23,8 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -46,6 +44,8 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements SurfaceHolder.Callback {
     public static final String FILE_NAME = "temp.jpg";
+    private static final int CAMERA_PERMISSION_CALLBACK = 1241;
+    private static final int STORAGE_PERMISSION_CALLBACK = 4554;
     private static final String HAS_SHOWN_PARENT_DIALOG = "hasShownParentDialog";
     private static final int GALLERY_IMAGE_REQUEST = 1;
     public static final int CAMERA_PERMISSIONS_REQUEST = 2;
@@ -68,6 +68,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        getPermissions();
+
         setContentView(R.layout.activity_main);
 
         mPlayerManager = new PlayerManager(getApplicationContext());
@@ -239,6 +242,11 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             return;
         }
 
+        if (camera == null){
+            startCamera();
+            return;
+        }
+
         try {
             camera.stopPreview();
         } catch (Exception e) {
@@ -253,6 +261,10 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+        startCamera();
+    }
+
+    private void startCamera(){
         try {
             camera = Camera.open();
         }
@@ -318,41 +330,19 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         }
     }
 
-    public void startGalleryChooser() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select a photo"),
-                GALLERY_IMAGE_REQUEST);
-    }
-
-    public void startCamera() {
+    public void getPermissions() {
         if (PermissionUtils.requestPermission(
                 this,
                 CAMERA_PERMISSIONS_REQUEST,
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.CAMERA)) {
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(getCameraFile()));
-            startActivityForResult(intent, CAMERA_IMAGE_REQUEST);
         }
     }
 
-    public File getCameraFile() {
-        File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        return new File(dir, FILE_NAME);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-//        if (requestCode == GALLERY_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
-//            CloudVisionUtils.uploadImage(data.getData(), mMainImage, mImageDetails, this);
-//        } else if (requestCode == CAMERA_IMAGE_REQUEST && resultCode == RESULT_OK) {
-//            CloudVisionUtils.uploadImage(Uri.fromFile(getCameraFile()), mMainImage, mImageDetails, this);
-//        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//    }
 
     @Override
     public void onRequestPermissionsResult(
@@ -362,7 +352,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 requestCode,
                 CAMERA_PERMISSIONS_REQUEST,
                 grantResults)) {
-            startCamera();
+            refreshCamera();
         }
     }
 
@@ -381,5 +371,4 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             return builder.create();
         }
     }
-
 }
