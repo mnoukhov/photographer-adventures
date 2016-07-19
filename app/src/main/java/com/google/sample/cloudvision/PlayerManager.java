@@ -14,20 +14,26 @@ public class PlayerManager {
     private static final String USER_SHARED_PREFERENCES = "user_shared_preferences";
     private static final String USER_EXPERIENCE = "user_experience";
     private static final int[] LEVEL_CURVE = {0, 2, 8, 18, 32, 50, 72, 98, 128, 162, 200};
+    private static PlayerManager mInstance;
 
-    private Context context;
+    private PlayerManager(){
 
-    public PlayerManager(Context context){
-        this.context = context;
     }
 
-    public int getExperience() {
+    public static PlayerManager getInstance(){
+        if (mInstance == null){
+            mInstance = new PlayerManager();
+        }
+        return mInstance;
+    }
+
+    public int getExperience(Context context) {
         SharedPreferences pref = context.getSharedPreferences(USER_SHARED_PREFERENCES, 0);
         return pref.getInt(USER_EXPERIENCE, 0);
     }
 
-    public int getLevel(){
-        int currentExperience = getExperience();
+    public int getLevel(Context context){
+        int currentExperience = getExperience(context);
         int previousExperience = 0;
         for (int i = 0 ; i < LEVEL_CURVE.length; i++){
             int levelExperience = LEVEL_CURVE[i];
@@ -40,7 +46,7 @@ public class PlayerManager {
         return 1;
     }
 
-    public boolean addExperience(int additional){
+    public boolean addExperience(int additional, Context context){
         try {
             //Increment experience
             SharedPreferences pref = context.getSharedPreferences(USER_SHARED_PREFERENCES, 0);
@@ -56,15 +62,15 @@ public class PlayerManager {
         }
     }
 
-    public int experienceUntilNextLevel(){
-        int currentExperience = getExperience();
-        int levelExperience = LEVEL_CURVE[getLevel()];
+    public int experienceUntilNextLevel(Context context){
+        int currentExperience = getExperience(context);
+        int levelExperience = LEVEL_CURVE[getLevel(context)];
         return levelExperience - currentExperience;
     }
 
-    public int percentageOfLevelComplete(){
-        int currentExperience = getExperience();
-        int level = getLevel();
+    public int percentageOfLevelComplete(Context context){
+        int currentExperience = getExperience(context);
+        int level = getLevel(context);
         int levelExperience = LEVEL_CURVE[level];
         int previousLevelExperience = LEVEL_CURVE[level - 1];
         int differenceInLevel = levelExperience - previousLevelExperience;
@@ -72,7 +78,8 @@ public class PlayerManager {
         return (int)Math.floor((double)differenceInCurrent / (double)differenceInLevel * 100d);
     }
 
-    public void resetExperience() {
+    //Please don't use unless testing
+    public void resetExperience(Context context) {
         try {
             SharedPreferences pref = context.getSharedPreferences(USER_SHARED_PREFERENCES, 0);
             SharedPreferences.Editor editor = pref.edit();
@@ -85,7 +92,7 @@ public class PlayerManager {
     }
 
     //Please don't use unless testing
-    protected boolean setExperience(int experience){
+    protected boolean setExperience(int experience, Context context){
         try {
             Log.d(LOG_TAG, "setExperience: Called. Setting experience to " + experience);
             //Increment experience

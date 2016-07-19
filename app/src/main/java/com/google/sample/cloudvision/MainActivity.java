@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         setContentView(R.layout.activity_main);
 
-        mPlayerManager = new PlayerManager(getApplicationContext());
+        mPlayerManager = PlayerManager.getInstance();
 
         FloatingActionButton reportFab = (FloatingActionButton) findViewById(R.id.report_fab);
         reportFab.setOnClickListener(new View.OnClickListener() {
@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
                 if (match) {
                     mCurrentObject.setState(Object.State.CORRECT);
-                    mPlayerManager.addExperience(mObjectManager.getExperience(mCurrentObject));
+                    mPlayerManager.addExperience(ObjectManager.getInstance().getExperience(mCurrentObject, getApplicationContext()), getApplicationContext());
                     output = String.format("Congratulations, you found the %s!", mCurrentObject.getName());
 
                 } else {
@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 }
 
                 mCurrentObject.setAttempts(1 + mCurrentObject.getAttempts());
-                mObjectManager.updateObject(mCurrentObject);
+                ObjectManager.getInstance().updateObject(mCurrentObject, getApplicationContext());
 
                 // Output match results and refresh the camera
                 mImageDetails.setText(output);
@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             }
         };
 
-        mObjectManager = ObjectManager.getInstance(getApplicationContext());
+        mObjectManager = ObjectManager.getInstance();
         mImageDetails = (TextView) findViewById(R.id.image_details);
         mSearchWord = (TextView) findViewById(R.id.search_word);
 
@@ -202,12 +202,12 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     }
 
     public void goToObject(String name) {
-        mCurrentObject = mObjectManager.setCurrentObject(name);
+        mCurrentObject = ObjectManager.getInstance().setCurrentObject(name, getApplicationContext());
         mSearchWord.setText(String.format("Current Search Word: %s.", name));
     }
 
     public void skipObject(){
-        mCurrentObject = mObjectManager.getNextObject(mCurrentObject);
+        mCurrentObject = ObjectManager.getInstance().getNextObject(mCurrentObject, getApplicationContext());
         String name = "";
         if (null != mCurrentObject) {
             name = mCurrentObject.getName();

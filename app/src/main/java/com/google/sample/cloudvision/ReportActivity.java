@@ -26,15 +26,17 @@ public class ReportActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
-        mPlayerManager = new PlayerManager(getApplicationContext());
-        mObjectManager = ObjectManager.getInstance(getApplicationContext());
+
+        //Ensure they're initialized.
+        mPlayerManager = PlayerManager.getInstance();
+        mObjectManager = ObjectManager.getInstance();
         updateTextFields();
 
         FloatingActionButton cameraFab = (FloatingActionButton) findViewById(R.id.camera_fab);
         cameraFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startCameraActivity(view, mObjectManager.getCurrentObject().getName());
+                startCameraActivity(view, ObjectManager.getInstance().getCurrentObject(getApplicationContext()).getName());
             }
         });
 
@@ -79,14 +81,14 @@ public class ReportActivity extends AppCompatActivity {
 
     //Reset statistics
     private void resetStatistics() {
-        mObjectManager.resetObjects();
-        mPlayerManager.resetExperience();
+        ObjectManager.getInstance().resetObjects(getApplicationContext());
+        mPlayerManager.resetExperience(getApplicationContext());
         updateTextFields();
     }
 
     // Update text fields in view
     private void updateTextFields() {
-        Object[] myDataset = mObjectManager.getAllItems();
+        Object[] myDataset = ObjectManager.getInstance().getAllItems(getApplicationContext());
         mRecyclerView = (RecyclerView) findViewById(R.id.report_recycler);
         // use a linear layout manager
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
@@ -95,14 +97,14 @@ public class ReportActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mAdapter);
 
         mProgress = (ProgressBar) findViewById(R.id.user_experience);
-        mProgress.setProgress(mPlayerManager.percentageOfLevelComplete());
+        mProgress.setProgress(mPlayerManager.percentageOfLevelComplete(getApplicationContext()));
 
         TextView expTillNext = (TextView) findViewById(R.id.level_progress);
-        String experience = "Experience Until Next Level: "+ mPlayerManager.experienceUntilNextLevel();
+        String experience = "Experience Until Next Level: "+ mPlayerManager.experienceUntilNextLevel(getApplicationContext());
         expTillNext.setText(experience);
 
         TextView currentLevel = (TextView) findViewById(R.id.current_level);
-        String level = "You Are Level "+ mPlayerManager.getLevel();
+        String level = "You Are Level "+ mPlayerManager.getLevel(getApplicationContext());
         currentLevel.setText(level);
     }
 }
