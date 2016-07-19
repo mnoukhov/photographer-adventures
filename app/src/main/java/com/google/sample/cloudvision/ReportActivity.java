@@ -98,6 +98,7 @@ public class ReportActivity extends AppCompatActivity {
 
         mProgress = (ProgressBar) findViewById(R.id.user_experience);
         mProgress.setProgress(mPlayerManager.percentageOfLevelComplete(getApplicationContext()));
+        mProgress.setScaleY(2f);
 
         TextView expTillNext = (TextView) findViewById(R.id.level_progress);
         String experience = "Experience Until Next Level: "+ mPlayerManager.experienceUntilNextLevel(getApplicationContext());

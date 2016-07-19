@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class ReportRecyclerAdapter extends RecyclerView.Adapter<ReportRecyclerAdapter.ViewHolder> {
@@ -18,11 +19,13 @@ public class ReportRecyclerAdapter extends RecyclerView.Adapter<ReportRecyclerAd
         public TextView mObjectName;
         public TextView mObjectStatus;
         public TextView mObjectAttempts;
+        public ImageView mImageView;
         public ViewHolder(View v) {
             super(v);
             mObjectName = (TextView) itemView.findViewById(R.id.objectName);
             mObjectStatus = (TextView) itemView.findViewById(R.id.objectStatus);
             mObjectAttempts = (TextView) itemView.findViewById(R.id.objectAttempts);
+            mImageView = (ImageView) itemView.findViewById(R.id.objectClickIcon);
             itemView.setOnClickListener(this);
         }
 
@@ -62,10 +65,10 @@ public class ReportRecyclerAdapter extends RecyclerView.Adapter<ReportRecyclerAd
         Object.State state = o.getState();
         if (state == Object.State.SKIPPED && o.getAttempts() > 0){
             stateString = "Incorrect";
-            holder.mObjectStatus.setBackgroundColor(0x96ff4043);
+            holder.mObjectStatus.setTextColor(0x96ff4043);
         } else if (state == Object.State.CORRECT) {
             stateString = "Correct";
-            holder.mObjectStatus.setBackgroundColor(0x9650ff40);
+            holder.mObjectStatus.setTextColor(0x9650ff40);
         } else if (state == Object.State.NOT_TESTED) {
             stateString = "Not tested";
         }

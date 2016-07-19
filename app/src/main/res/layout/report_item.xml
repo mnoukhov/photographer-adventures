@@ -8,28 +8,34 @@
     android:layout_weight="1"
     android:paddingBottom="15dp"
     android:paddingTop="15dp"
-    android:background="@drawable/border"
     >
 
     <TextView
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:id="@+id/objectName"
         android:layout_gravity="center"
         android:gravity="center" />
     <TextView
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:id="@+id/objectStatus"
         android:layout_gravity="center"
         android:gravity="center" />
     <TextView
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:id="@+id/objectAttempts"
         android:layout_gravity="center"
         android:gravity="center" />
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/objectClickIcon"
+        android:paddingRight="10dp"
+        android:src="@android:drawable/ic_menu_set_as" />
+
 </LinearLayout>
