@@ -62,8 +62,10 @@ public class ReportRecyclerAdapter extends RecyclerView.Adapter<ReportRecyclerAd
         Object.State state = o.getState();
         if (state == Object.State.SKIPPED && o.getAttempts() > 0){
             stateString = "Incorrect";
+            holder.mObjectStatus.setBackgroundColor(0x96ff4043);
         } else if (state == Object.State.CORRECT) {
             stateString = "Correct";
+            holder.mObjectStatus.setBackgroundColor(0x9650ff40);
         } else if (state == Object.State.NOT_TESTED) {
             stateString = "Not tested";
         }

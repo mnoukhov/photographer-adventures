@@ -12,10 +12,13 @@
     <string name="action_photo">Activity</string>
     <string name="action_report">Report</string>
 
+    <string name="parent_advice_title">Parental Advisory</string>
     <string name="parent_advice">Please make sure an adult is around while playing.</string>
     <string name="ok">OK</string>
 
+    <string name="no_internet_title">Network Issue</string>
     <string name="no_internet">You currently have no internet access. Please connect to the internet before continuing.</string>
+    <string name="redirect_to_report">Go to the report</string>
 
     <string name="image_picker_error">Something is wrong with that image. Pick a different one please.</string>
 </resources>

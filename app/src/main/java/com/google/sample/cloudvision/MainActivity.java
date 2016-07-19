@@ -203,7 +203,11 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     public void goToObject(String name) {
         mCurrentObject = ObjectManager.getInstance().setCurrentObject(name, getApplicationContext());
-        mSearchWord.setText(String.format("Current Search Word: %s.", name));
+        mSearchWord.setText(String.format("Go find a: %s.", capitalizeFirstLetter(name)));
+    }
+
+    private String capitalizeFirstLetter(String s){
+        return s.substring(0,1).toUpperCase() + s.substring(1);
     }
 
     public void skipObject(){
@@ -212,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         if (null != mCurrentObject) {
             name = mCurrentObject.getName();
         }
-        mSearchWord.setText(String.format("Current Search Word: %s.", name));
+        mSearchWord.setText(String.format("Go find a: %s.", capitalizeFirstLetter(name)));
     }
 
     public void captureImage() throws IOException {
@@ -334,6 +338,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle(R.string.parent_advice_title);
             builder.setMessage(R.string.parent_advice)
                     .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
@@ -349,8 +354,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle(R.string.no_internet_title);
             builder.setMessage(R.string.no_internet)
-                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    .setPositiveButton(R.string.redirect_to_report, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             Intent intent = new Intent(getContext(), ReportActivity.class);
                             startActivity(intent);

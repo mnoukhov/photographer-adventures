@@ -178,7 +178,14 @@ public class CloudVisionUtils {
                 message += String.format("%s, ", label.getDescription().toLowerCase());
             }
         }
-        return message;
+        int indices = message.length() - 2;
+        //Strip the final comma and space;
+        if (message.length() > 2) {
+            return message.substring(0, indices);
+        } else {
+            return message;
+        }
+
     }
 
 }
