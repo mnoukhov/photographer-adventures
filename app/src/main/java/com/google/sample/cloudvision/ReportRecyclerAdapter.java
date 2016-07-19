@@ -71,6 +71,7 @@ public class ReportRecyclerAdapter extends RecyclerView.Adapter<ReportRecyclerAd
             holder.mObjectStatus.setTextColor(0x9650ff40);
         } else if (state == Object.State.NOT_TESTED) {
             stateString = "Not tested";
+            holder.mObjectStatus.setTextColor(0xff000000);
         }
         holder.mObjectName.setText(o.getName());
         holder.mObjectStatus.setText(stateString);
